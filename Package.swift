@@ -14,7 +14,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-argument-parser", from: "0.3.0"),
         .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0"),
         .package(url: "https://github.com/JohnSundell/ShellOut.git", from: "2.0.0"),
-        .package(url: "https://github.com/realm/SwiftLint", from: "0.50.3")
+        .package(url: "https://github.com/realm/SwiftLint", from: "0.50.1")
     ],
     targets: [
         .target(
