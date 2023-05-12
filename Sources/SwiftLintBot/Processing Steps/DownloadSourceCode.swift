@@ -9,7 +9,7 @@ import Vapor
 import ShellOut
 
 extension BitbucketEvent {
-    private var archiveRequetsURL: URI {
+    private var archiveRequestURL: URI {
         "\(context.baseURL)/api/latest/projects/\(project.key)/repos/\(repository.key)/archive?at=\(pullRequest.commitHash)&filename=\(pullRequest.commitHash).zip&format=zip"
     }
     
@@ -17,13 +17,13 @@ extension BitbucketEvent {
         request.logger.info("Create a working directory at \(workingDirectory)")
         try shellOut(to: "mkdir -p \(self.workingDirectory)")
         
-        request.logger.info("Send request to \(archiveRequetsURL)")
+        request.logger.info("Send request to \(archiveRequestURL)")
         
         return request.client
-            .get(archiveRequetsURL, headers: context.requestHeader)
+            .get(archiveRequestURL, headers: context.requestHeader)
             .flatMapThrowing { response -> ByteBuffer? in
                 guard response.status == .ok else {
-                    request.logger.error("Could not download the .zip from \(archiveRequetsURL)")
+                    request.logger.error("Could not download the .zip from \(archiveRequestURL)")
                     throw Abort(.internalServerError, reason: "Could not download the .zip archieve from BitBucket")
                 }
                 
