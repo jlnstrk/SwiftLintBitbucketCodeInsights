@@ -1,11 +1,11 @@
-// swift-tools-version:5.3
+// swift-tools-version:5.8
 import PackageDescription
 
 
 let package = Package(
     name: "swiftlintbot",
     platforms: [
-        .macOS(.v10_15)
+        .macOS(.v13)
     ],
     products: [
         .executable(name: "swiftlintbot", targets: ["SwiftLintBot"])
