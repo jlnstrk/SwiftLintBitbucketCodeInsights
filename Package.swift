@@ -14,10 +14,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.2.2"),
         .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0"),
         .package(url: "https://github.com/JohnSundell/ShellOut.git", from: "2.0.0"),
-        // Bump to next stable, see:
-        // https://github.com/realm/SwiftLint/issues/4641
-        // https://github.com/realm/SwiftLint/pull/4674
-        .package(url: "https://github.com/realm/SwiftLint", from: "0.51.0-rc.2")
+        .package(url: "https://github.com/realm/SwiftLint", from: "0.52.2")
     ],
     targets: [
         .target(
