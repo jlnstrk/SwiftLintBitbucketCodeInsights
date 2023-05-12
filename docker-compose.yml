@@ -7,4 +7,4 @@ services:
     restart: always
     ports:
       - '80:8080'
-    command: "--bitbucket ${BITBUCKET} --secret ${BITBUCKETSECRET} --configuration ${CONFIGURATION}"
+    command: "--bitbucket ${BITBUCKET} --secrets ${BITBUCKETSECRETS} --configuration ${CONFIGURATION}"

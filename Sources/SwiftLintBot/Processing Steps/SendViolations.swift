@@ -53,7 +53,7 @@ extension BitbucketEvent {
     }
     
     private func deleteAllAnnotations(on request: Request) throws -> EventLoopFuture<Void> {
-        request.client.delete(annotationsURL, headers: context.requestHeader)
+        request.client.delete(annotationsURL, headers: try context.requestHeader(project: project.key))
             .flatMapThrowing { response in
                 guard response.status == .noContent else {
                     request.logger.error("Could not delete the annotations from bitbucket: \(response.status). \((try? response.content.decode(String.self)) ?? "No error description provided")")
@@ -68,12 +68,12 @@ extension BitbucketEvent {
     
     private func postAllAnnotations(basedOn violations: [StyleViolation], on request: Request) throws -> EventLoopFuture<Void> {
         // swiftlint:disable:next array_init
-        stride(from: 0, to: violations.count, by: violationsChunkSize)
+        try stride(from: 0, to: violations.count, by: violationsChunkSize)
             .map {
                 violations[$0 ..< min($0 + violationsChunkSize, violations.count)]
             }
             .map { chunkedViolations in
-                request.client.post(annotationsURL, headers: context.requestHeader) { clientRequest in
+                request.client.post(annotationsURL, headers: try context.requestHeader(project: project.key)) { clientRequest in
                         try clientRequest.content.encode(
                             [
                                 "annotations": chunkedViolations.map {
@@ -100,7 +100,7 @@ extension BitbucketEvent {
     }
     
     private func updateInsightsReport(basedOn violations: [StyleViolation], on request: Request) throws -> EventLoopFuture<Void> {
-        request.client.put(reportURL, headers: context.requestHeader) { clientRequest in
+        request.client.put(reportURL, headers: try context.requestHeader(project: project.key)) { clientRequest in
             try clientRequest.content.encode(InsightsReport(violations))
         }
             .flatMapThrowing { response in

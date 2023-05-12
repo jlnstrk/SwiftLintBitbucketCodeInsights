@@ -20,7 +20,7 @@ extension BitbucketEvent {
         request.logger.info("Send request to \(archiveRequestURL)")
         
         return request.client
-            .get(archiveRequestURL, headers: context.requestHeader)
+            .get(archiveRequestURL, headers: try context.requestHeader(project: project.key))
             .flatMapThrowing { response -> ByteBuffer? in
                 guard response.status == .ok else {
                     request.logger.error("Could not download the .zip from \(archiveRequestURL)")

@@ -15,8 +15,14 @@ struct Context: ParsableCommand {
     @ArgumentParser.Option(help: "The Bitbucket instance that is used. E.g.: bitbucket.schmiedmayer.com.")
     var bitbucket: String
     
-    @ArgumentParser.Option(help: "The Bitbucket secret used to authenticate with the Bitbucket instance.")
-    var secret: String
+    @ArgumentParser.Option(
+        help: """
+        The Bitbucket project secrets used to authenticate with the Bitbucket instance.
+        Pass comma separated string of mappings "[PROJECTID1]=[SECRET1],[PROJECTID2]=[SECRET2]".
+        """,
+        transform: readSecretsMapping
+)
+    var secrets: [String: String]
     
     @ArgumentParser.Option(
         help: """
@@ -50,9 +56,12 @@ struct Context: ParsableCommand {
         "https://\(bitbucket)/rest"
     }
     
-    var requestHeader: HTTPHeaders {
+    func requestHeader(project: String) throws -> HTTPHeaders {
         var headers = HTTPHeaders()
-        headers.add(name: .authorization, value: "Bearer \(context.secret)")
+        guard let secret = context.secrets[project] else {
+            throw Abort(.internalServerError, reason: "Missing secret for project \(project)")
+        }
+        headers.add(name: .authorization, value: "Bearer \(secret)")
         headers.add(name: "X-Atlassian-Token", value: "no-check")
         return headers
     }
@@ -73,6 +82,19 @@ struct Context: ParsableCommand {
         _ = Configuration(configurationFiles: [potentialConfigurationFile.path])
         
         return potentialConfigurationFile
+    }
+
+    private static func readSecretsMapping(_ string: String) throws -> [String: String] {
+        app.logger.notice("Trying to load the project secrets mapping")
+
+        var map: [String: String] = [:]
+        string
+            .split(separator: ",")
+            .forEach {
+                let components = $0.split(separator: "=")
+                map[String(components[0])] = String(components[1])
+            }
+        return map
     }
     
     private static func readLogLevel(_ string: String) throws -> Logger.Level? {
