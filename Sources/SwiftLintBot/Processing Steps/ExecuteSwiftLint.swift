@@ -9,8 +9,8 @@ import Vapor
 import SwiftLintFramework
 
 extension BitbucketEvent {
-    func executeSwiftLint(on request: Request) throws -> EventLoopFuture<Void> {
-        let configuration = Configuration(configurationFiles: [sourceCodeDirectory + "/.swiftlint.yml"])
+    func executeSwiftLint(on request: Request, configurationFile: String?) throws -> EventLoopFuture<Void> {
+        let configuration = Configuration(configurationFiles: configurationFile.map { [$0] } ?? [])
         
         var swiftFiles: [SwiftLintFile] = []
         let directoryEnumerator = FileManager.default.enumerator(atPath: sourceCodeDirectory)
