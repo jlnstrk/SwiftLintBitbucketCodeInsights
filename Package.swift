@@ -17,7 +17,7 @@ let package = Package(
         .package(url: "https://github.com/realm/SwiftLint", from: "0.52.2")
     ],
     targets: [
-        .target(
+        .executableTarget(
             name: "SwiftLintBot",
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
