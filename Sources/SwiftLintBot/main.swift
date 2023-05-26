@@ -1,5 +1,6 @@
 import Vapor
 import ShellOut
+import SwiftLintFramework
 
 #if DEBUG
 var env = try Environment.detect(
@@ -18,6 +19,7 @@ defer {
     app.shutdown()
 }
 
+RuleRegistry.registerAllRulesOnce()
 let context = Context.parseOrExit()
 
 if let loglevel = context.loglevel {
