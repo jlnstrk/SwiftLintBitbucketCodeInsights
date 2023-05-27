@@ -37,7 +37,7 @@ extension BitbucketEvent {
         if let configurationFile = fileURLs.first(where: { $0.lastPathComponent == ".swiftlint.yml" }) {
             let relativePath = configurationFile.relativePath(to: URL(fileURLWithPath: sourceCodeDirectory))
             request.logger.info("Found a .swiftlint.yml file that will be used: \(relativePath)")
-            return try executeSwiftLint(on: request, configurationFile: configurationFile.absoluteString)
+            return try executeSwiftLint(on: request, configurationFile: configurationFile.path)
         }
         
         guard let defaultSwiftLintConfiguration = context.configuration else {
